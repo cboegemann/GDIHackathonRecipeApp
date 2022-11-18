@@ -3,13 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GDIHackathonRecipeApp.Models
 {
-	public class Note
+	public class DietaryRestriction
 	{
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Your note is empty!")]
-        public string? NoteContents { get; set; }
-        public DateTime CreationDate { get; set; }
+        [Required]
+        public string? Restriction { get; set; }
 
         [Required]
         public int RecipeId { get; set; }

@@ -8,17 +8,32 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GDIHackathonRecipeApp.Data.Migrations
+namespace GDIHackathonRecipeApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221117023347_ModelRevisions")]
-    partial class ModelRevisions
+    [Migration("20221118012933_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.0");
+
+            modelBuilder.Entity("CookbookRecipe", b =>
+                {
+                    b.Property<int>("CookbooksId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RecipesId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("CookbooksId", "RecipesId");
+
+                    b.HasIndex("RecipesId");
+
+                    b.ToTable("CookbookRecipe");
+                });
 
             modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.DeviceFlowCodes", b =>
                 {
@@ -225,6 +240,44 @@ namespace GDIHackathonRecipeApp.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("GDIHackathonRecipeApp.Models.Cookbook", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cookbooks");
+                });
+
+            modelBuilder.Entity("GDIHackathonRecipeApp.Models.DietaryRestriction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Restriction")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("DietaryRestrictions");
+                });
+
             modelBuilder.Entity("GDIHackathonRecipeApp.Models.Note", b =>
                 {
                     b.Property<int>("Id")
@@ -253,6 +306,10 @@ namespace GDIHackathonRecipeApp.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -391,15 +448,37 @@ namespace GDIHackathonRecipeApp.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CookbookRecipe", b =>
+                {
+                    b.HasOne("GDIHackathonRecipeApp.Models.Cookbook", null)
+                        .WithMany()
+                        .HasForeignKey("CookbooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GDIHackathonRecipeApp.Models.Recipe", null)
+                        .WithMany()
+                        .HasForeignKey("RecipesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GDIHackathonRecipeApp.Models.DietaryRestriction", b =>
+                {
+                    b.HasOne("GDIHackathonRecipeApp.Models.Recipe", null)
+                        .WithMany("DietaryRestrictions")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GDIHackathonRecipeApp.Models.Note", b =>
                 {
-                    b.HasOne("GDIHackathonRecipeApp.Models.Recipe", "Recipe")
+                    b.HasOne("GDIHackathonRecipeApp.Models.Recipe", null)
                         .WithMany("Notes")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Recipe");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -455,6 +534,8 @@ namespace GDIHackathonRecipeApp.Data.Migrations
 
             modelBuilder.Entity("GDIHackathonRecipeApp.Models.Recipe", b =>
                 {
+                    b.Navigation("DietaryRestrictions");
+
                     b.Navigation("Notes");
                 });
 #pragma warning restore 612, 618

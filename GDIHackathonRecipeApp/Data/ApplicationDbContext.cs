@@ -14,7 +14,9 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
 
     }
 
+    public DbSet<Cookbook> Cookbooks { get; set; }
     public DbSet<Recipe> Recipes { get; set; }
     public DbSet<Note> Notes { get; set; }
+    public DbSet<DietaryRestriction> DietaryRestrictions { get; set; }
 }
 

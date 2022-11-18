@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using GDIHackathonRecipeApp.Data;
 using GDIHackathonRecipeApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,6 +15,7 @@ namespace GDIHackathonRecipeApp.Controllers
     public class RecipeController : Controller
     {
         private readonly ILogger<RecipeController> _logger;
+
         private ApplicationDbContext _dbContext;
 
         public RecipeController(ILogger<RecipeController> logger, ApplicationDbContext dbContext)
@@ -24,12 +26,15 @@ namespace GDIHackathonRecipeApp.Controllers
 
         //view homepage (view buttons that will enable recipes to be shown)
         // GET: /<controller>/
+        /*
         public IActionResult Index()
         {
             return View();
         }
+        */
 
         // get recipe id
+        [HttpGet("{id}")]
         public Recipe? GetRecipeById(int id)
         {
             return _dbContext.Recipes
@@ -39,6 +44,7 @@ namespace GDIHackathonRecipeApp.Controllers
         }
 
         // save a new recipe
+        [HttpPost]
         public Recipe Save(Recipe newRecipe)
         {
             _dbContext.Recipes.Add(newRecipe);
@@ -116,8 +122,11 @@ namespace GDIHackathonRecipeApp.Controllers
         public async Task<IActionResult> DeleteRecipeConfirmed(int id)
         {
             var recipe = await _dbContext.Recipes.FindAsync(id);
-            _dbContext.Recipes.Remove(recipe);
-            await _dbContext.SaveChangesAsync();
+            if (recipe != null)
+            {
+                _dbContext.Recipes.Remove(recipe);
+                await _dbContext.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -128,8 +137,11 @@ namespace GDIHackathonRecipeApp.Controllers
         public async Task<IActionResult> DeleteNoteConfirmed(int id)
         {
             var note = await _dbContext.Notes.FindAsync(id);
-            _dbContext.Notes.Remove(note);
-            await _dbContext.SaveChangesAsync();
+            if (note != null)
+            {
+                _dbContext.Notes.Remove(note);
+                await _dbContext.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 
