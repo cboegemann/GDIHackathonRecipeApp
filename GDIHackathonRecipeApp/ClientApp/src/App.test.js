@@ -12,3 +12,6 @@ it('renders without crashing', async () => {
     </MemoryRouter>);
   await new Promise(resolve => setTimeout(resolve, 1000));
 });
+
+
+//note to self - did not bring in code from reach app - tbd if this is an issue
