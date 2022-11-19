@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GDIHackathonRecipeApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221118012933_InitialCreate")]
+    [Migration("20221119032824_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -306,10 +306,6 @@ namespace GDIHackathonRecipeApp.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

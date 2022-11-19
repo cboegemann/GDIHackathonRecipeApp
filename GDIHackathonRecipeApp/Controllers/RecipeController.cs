@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 
 namespace GDIHackathonRecipeApp.Controllers
 {
+    //[ApiController]
+    //[Route("[controller]")]
     public class RecipeController : Controller
     {
         private readonly ILogger<RecipeController> _logger;
@@ -34,6 +36,7 @@ namespace GDIHackathonRecipeApp.Controllers
         */
 
         // get recipe id
+        
         [HttpGet("{id}")]
         public Recipe? GetRecipeById(int id)
         {
@@ -42,15 +45,25 @@ namespace GDIHackathonRecipeApp.Controllers
                 .AsNoTracking()
                 .SingleOrDefault(p => p.Id == id);
         }
+        
 
         // save a new recipe
-        [HttpPost]
-        public Recipe Save(Recipe newRecipe)
+        [HttpPost("{id}")]
+        public IActionResult Save(int id)
         {
-            _dbContext.Recipes.Add(newRecipe);
-            _dbContext.SaveChanges();
+            var pendingRecipe = new Recipe { Id = id };
 
-            return newRecipe;
+            try
+            {
+                _dbContext.Recipes.Add(pendingRecipe);
+                _dbContext.SaveChanges();
+                return Ok(pendingRecipe);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+            
         }
 
 
